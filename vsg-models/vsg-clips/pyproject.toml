@@ -1,0 +1,18 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "vsg-clips"
+version = "0.1.0"
+description = "Video Snippets Generator"
+authors = ["Ricardo G. Sousa <ricardo@rsousa.co>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "~3.10"
+clipsai = "~0.2.1"
+whisperx = {git = "https://github.com/m-bain/whisperX.git", rev = "f2da2f8" }
+torch = "2.0.0"
+

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Snippets and Blog Generator</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" >
+</head>
+<body>
+    <h1>Submit your video</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="video" accept="video/*" required>
+        <input type="submit" value="Submit">
+    </form>
+
+    {% if video_path %}
+        <h2>Video you have submitted:</h2>
+        <video width="400" controls>
+            <source src="{{ video_path }}" type="video/mp4">
+        </video>
+    {% endif %}
+
+    {% if other_videos %}
+        <h2>Video Clips:</h2>
+        <ul>
+            {% for video in other_videos.videos %}
+            <li>
+                <video width="400" controls>
+                    <source src="{{ url_for('static', filename=video.loc) }}" type="video/mp4">
+                </video>
+                <input type="text" readonly>
+
+            </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <script>
+        // TODO: complete
+        function get_blog_for_video(videoPath, shortVideoTranscription) {
+          const url = 'https://x.x.x.x/';
+          const payload = {
+            video: videoPath,
+            short_video_transcription: shortVideoTranscription,
+
+          };
+
+          return fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          })
+            .then(response => response.text())
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
