@@ -1,6 +1,6 @@
 CWD = $(shell pwd)
 
-PROJECTS = vsg-models/vsg-themes vsg-models/vsg-clips vsg-models/vsg-gen
+PROJECTS = vsg-models/vsg-themes vsg-models/vsg-clips vsg-models/vsg-gen vsg-utils
 DOC_PROJECTS = docs
 BIN_PROJECTS = $(PROJECTS)
 

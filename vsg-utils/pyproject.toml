@@ -1,0 +1,16 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "vsg-utils"
+version = "0.1.0"
+description = "Video Snippets Generator (Utils)"
+authors = ["Ricardo G. Sousa <ricardo@rsousa.co>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "~3.10"
+
+
