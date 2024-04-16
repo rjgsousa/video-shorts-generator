@@ -1,18 +1,23 @@
-import random
+import json
+import logging
+import time
 
 import gensim.downloader
-
+import networkx as nx
 import nltk
+import numpy as np
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize, RegexpTokenizer
 from sklearn.neighbors import NearestNeighbors
+
+from vsg_utils.files import save_to_json_file
 
 nltk.download('stopwords')
 nltk.download('wordnet')
 nltk.download('punkt')
 
 
-class LexicalChains:
+class ThemeLexicalChains:
     """
     A class for constructing lexical chains from a given text.
 
@@ -20,13 +25,15 @@ class LexicalChains:
     coherence and semantic relationships within the text. This class processes
     the input text, identifies relevant keywords, and groups them into chains
     based on their semantic similarity.
+
+    Morris, J. and G. Hirst. Lexical cohesion computed by thesaural relations as an indicator of the
+    structure of the text. In Computational Linguistics, 18(1):pp21-45. 1991.
     """
     def __init__(self):
         self.n_sentences = -1
         self.lexical_chains = []
-        self.graph = {}
+        self.graphs = {}
         self.model = None
-
         self._load_embeddings_model()
 
     @property
@@ -34,11 +41,17 @@ class LexicalChains:
         return self.lexical_chains
 
     def _load_embeddings_model(self):
+        start_time = time.time()
+        # todo: improve this as gensim is slow loading the model.
+        logging.info("loading model...")
         self.model = gensim.downloader.load('word2vec-google-news-300')
+        logging.info(f"done in {time.time() - start_time} sec.")
 
     def build_graph(self, sentences):
 
         for index, sent in enumerate(sentences):
+            index_str = str(index)
+
             words = self.pre_process(sent, remove_punctuation=True)
 
             X = [self.model[word] for word in words if word in self.model.key_to_index]
@@ -53,16 +66,18 @@ class LexicalChains:
                         continue
                     similar_word = words[j]
 
-                    if str(index) not in self.graph.keys():
-                        self.graph[str(index)] = {}
+                    if index_str not in self.graphs.keys():
+                        self.graphs[index_str] = nx.DiGraph()
 
-                    if word not in self.graph[str(index)]:
-                        self.graph[str(index)][word] = []
+                    if word not in self.graphs[index_str].nodes():
+                        # node does not exist - adding new one
+                        self.graphs[index_str].add_node(word)
 
-                    if similar_word not in self.graph[str(index)][word]:
-                        self.graph[str(index)][word].append(similar_word)
-
-        print(self.graph)
+                    if similar_word not in self.graphs[index_str].neighbors(word):
+                        # adds an edge from "word" to "similar word" (weighted by their distance on the embedding space)
+                        # by weighting the edges will allow us to extract more relevant strongly connected edges
+                        dist_norm = np.linalg.norm(dist)
+                        self.graphs[index_str].add_edge(word, similar_word, weight=dist_norm)
 
     @staticmethod
     def pre_process(doc, remove_punctuation=False):
@@ -77,57 +92,76 @@ class LexicalChains:
 
         return words
 
-    def find_path(self, index, start, end, path=[]):
-        path = path + [start]
-        if len(path) == end:
-            return path
-        for node in self.graph[index][start]:
-            if node not in path:
-                newpath = self.find_path(index, node, end, path)
-                if newpath:
-                    return newpath
-
     def build_lexical_chains(self, doc):
         # Initialize a list to store the lexical chains
         self.lexical_chains = []
-        self.graph = {}
+        self.graphs = {}
 
         # split by sentences
-        sentences = sent_tokenize(doc)
+        sentences = sent_tokenize(doc, language="english")
 
-        # get number of sentences in doc
+        # set number of sentences in doc which will be later used for extracting lexical chains
         self.n_sentences = len(sentences)
 
         self.build_graph(sentences)
 
-    def extract_lexical_chains(self, n=3, depth=3):
+    def extract_lexical_chains(self, n=None, out_file_path=None):
         self.lexical_chains = []
-        if self.n_sentences > n:
+        if n is None:
+            n = self.n_sentences
+        elif self.n_sentences < n:
             n = self.n_sentences
 
-        for index in range(0, n):
-            elements = list(self.graph[str(index)].keys())
-            start = random.choice(elements)
+        logging.info(f"Processing {n} chains")
 
-            self.lexical_chains.append(self.find_path(str(index), start, depth))
+        for index in range(0, n):
+            index_str = str(index)
+
+            nodes = [c for c in sorted(nx.strongly_connected_components(self.graphs[index_str]), key=len, reverse=True)]
+
+            # adding only top-1
+            self.lexical_chains.append(nodes[0])
+
+        themes = {}
+        for idx, item in enumerate(self.lexical_chains):
+            items = list(item)
+            themes[idx] = {'theme': ' '.join(items), 'score': len(items)}
+
+        print(json.dumps(themes, indent=4))
+
+        if out_file_path:
+            save_to_json_file(themes, out_file_path)
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
 
-    documents = [
-        "This is an example document. It contains multiple sentences. Each sentence has several words.",
-        "Completing all of this won't happen within the initial hundred days. It won't be accomplished in the initial"
-        " thousand days either, nor during the tenure of this Administration, or even perhaps within our existence on "
-        "this celestial body. Nevertheless, let's commence.",
-        "The mystery of life isn't a problem to solve, but a reality to experience. Arrakis teaches the attitude of the"
-        " knife - chopping off what's incomplete and saying: 'Now it's complete because it's ended here.' "
-        ]
+    # from vsg_utils.files import load_json_data
+    # data_web_json = load_json_data('../../../../data/external/teslax.json')
+    # content = data_web_json.get('content', '')
 
-    lc = LexicalChains()
-    for document in documents:
-        print(10*"-")
-        print(document)
-        lc.build_lexical_chains(document)
-        lc.extract_lexical_chains(n=3)
-        print(lc.graph)
-        print(lc.chains)
+    """
+    example from:
+    
+    Morris, J. and G. Hirst. Lexical cohesion computed by thesaural relations as an indicator of the
+    structure of the text. In Computational Linguistics, 18(1):pp21-45. 1991.
+
+    """
+    content = (
+        "In front of me lay a virgin crescent cut out of pine bush. A dozen houses were going up, in various stages "
+        "of construction, surrounded by hummocks of dry earth and stands of precariously tall "
+        "trees nude halfway up their trunks. They were the kind of trees you might see in the mountains. "
+    )
+    # A lexical chain spanning these three sentences is {virgin, pine, bush, trees, trunks, trees}
+
+    lc = ThemeLexicalChains()
+    lc.build_lexical_chains(content)
+    lc.extract_lexical_chains(n=3)
+
+    print(10 * "=")
+    print("Graph: ")
+    print(lc.graphs)
+
+    print(10 * "=")
+    print("Lexical Chain: ")
+    print(lc.chains)
