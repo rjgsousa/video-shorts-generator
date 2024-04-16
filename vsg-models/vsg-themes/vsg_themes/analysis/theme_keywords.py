@@ -1,12 +1,11 @@
-import json
-
-from sklearn.feature_extraction.text import TfidfVectorizer
-from vsg_utils.files import save_to_json_file
-
 from typing import Union
 
+from sklearn.feature_extraction.text import TfidfVectorizer
 
-class Keywords:
+from vsg_utils.files import save_to_json_file
+
+
+class ThemeKeywords:
     """
         A class for performing TF-IDF (Term Frequency-Inverse Document Frequency) analysis on a corpus of documents.
 
@@ -48,10 +47,14 @@ class Keywords:
         print(10*"=")
 
         print("Presenting a report of the top key words available: ")
-        print(tfidf)
+        # final dictionary where we will record all themes
+        result = {}
+        for idx, item in enumerate(tfidf.items()):
+            result[idx] = {'theme': item[0], 'score': item[1]}
+        print(result)
 
         if out_file_path:
-            save_to_json_file(tfidf, out_file_path)
+            save_to_json_file(result, out_file_path)
 
 
 if __name__ == "__main__":
@@ -60,5 +63,5 @@ if __name__ == "__main__":
     data_web_json = load_json_data('../../../../data/external/teslax.json')
     content = data_web_json.get('content', '')
 
-    kd = Keywords()
+    kd = ThemeKeywords()
     kd.conduct_analysis_and_create_report(data=content)
