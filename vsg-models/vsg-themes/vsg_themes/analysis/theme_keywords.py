@@ -1,6 +1,9 @@
 import json
 
 from sklearn.feature_extraction.text import TfidfVectorizer
+from vsg_utils.files import save_to_json_file
+
+from typing import Union
 
 
 class Keywords:
@@ -18,7 +21,6 @@ class Keywords:
         self.threshold = threshold
 
     def _conduct_analysis(self, data):
-        # documents = [sentence.strip() for sentence in data.split('.') if sentence.strip()]
         documents = [data]
 
         vectorizer = TfidfVectorizer(stop_words='english')
@@ -41,11 +43,22 @@ class Keywords:
 
         return sorted_tfidf_dict
 
-    def conduct_analysis_and_create_report(self, data: str, outfile):
+    def conduct_analysis_and_create_report(self, data: str, out_file_path: Union[str | None] = None):
         tfidf = self._conduct_analysis(data)
         print(10*"=")
+
         print("Presenting a report of the top key words available: ")
         print(tfidf)
 
-        with open(outfile, "w") as file:
-            json.dump(tfidf, file)
+        if out_file_path:
+            save_to_json_file(tfidf, out_file_path)
+
+
+if __name__ == "__main__":
+    from vsg_utils.files import load_json_data
+
+    data_web_json = load_json_data('../../../../data/external/teslax.json')
+    content = data_web_json.get('content', '')
+
+    kd = Keywords()
+    kd.conduct_analysis_and_create_report(data=content)
