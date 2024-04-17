@@ -1,0 +1,16 @@
+vsg_services:
+  themes:
+    api_env: "prod"
+    api_version: "0.1.0"
+    api_description: "VSG: Themes Extractor."
+    api_title: "VSG: Themes Extractor."
+    docs_url: "/docs"
+    method: 'transformer'
+
+    localhost:
+      host: '0.0.0.0'
+      port: 8001
+
+    local:
+      host: 'vsg-themes'
+      port: 8001

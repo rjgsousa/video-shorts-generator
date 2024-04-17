@@ -9,6 +9,11 @@ clean:
 	rm -rfv .tox
 	pip uninstall -y $(PROJECT_NAME)
 
+dependencies:
+	pip install poetry==1.8.2
 
-install:
-	poetry install --only main -v
+install: dependencies
+	POETRY_VIRTUALENVS_CREATE=false poetry install --only main -v
+	python -m nltk.downloader wordnet
+	python -m nltk.downloader stopwords
+	python -m nltk.downloader punkt

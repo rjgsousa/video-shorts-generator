@@ -4,17 +4,12 @@ import time
 
 import gensim.downloader
 import networkx as nx
-import nltk
 import numpy as np
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize, RegexpTokenizer
 from sklearn.neighbors import NearestNeighbors
 
 from vsg_utils.files import save_to_json_file
-
-nltk.download('stopwords')
-nltk.download('wordnet')
-nltk.download('punkt')
 
 
 class ThemeLexicalChains:

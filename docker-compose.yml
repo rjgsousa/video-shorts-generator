@@ -1,6 +1,21 @@
 version: '3'
 
 services:
+  vsg-themes:
+    image: vsg-themes
+    build:
+        context: .
+        dockerfile: vsg-models/vsg-themes/vsg_themes.dockerfile
+    networks:
+      - vsg-network
+    ports:
+      - "8001:8001"
+    container_name: vsg-themes-container
+    command: bash -c "
+      cd /app/vsg-models/vsg-themes/vsg_themes/
+      && python app.py
+      "
+
   vsg-previewer:
     image: vsg-previewer
     build:
@@ -15,3 +30,6 @@ services:
       cd /app/vsg-previewer/vsg_previewer/
       && python app.py
       "
+
+networks:
+  vsg-network:

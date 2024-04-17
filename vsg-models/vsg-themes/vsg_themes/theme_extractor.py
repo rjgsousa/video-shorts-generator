@@ -1,9 +1,9 @@
-import json
 import argparse
-from vsg_themes.extract.from_web import get_data_from_url
+
+from vsg_themes.analysis.lexical_chains import ThemeLexicalChains
 from vsg_themes.analysis.theme_keywords import ThemeKeywords
 from vsg_themes.analysis.theme_transformer import ThemeTransformer
-from vsg_themes.analysis.lexical_chain import ThemeLexicalChains
+from vsg_themes.extract.from_web import get_data_from_url
 from vsg_utils.files import load_json_data
 
 
