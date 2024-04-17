@@ -1,0 +1,30 @@
+# ignore .git, .cache and MAC folders
+**/.git/**
+**/.DS_Store/**
+**/.cache/**
+**/.dvc/**
+**/.github/**
+**/.pytest_cache/**
+
+# ignore lock caches
+**/*.lock
+
+# ignore tox and other unit tests files
+**/.tox
+**/htmlcov
+
+# ignore venv
+**/venv
+
+# ignore reports and other documentation
+**/docs
+**/reports
+**/notebooks
+**/references
+
+# ignore data and models
+**/data
+**/models
+
+# ignore model weight folders in deploy directory
+**/models/
