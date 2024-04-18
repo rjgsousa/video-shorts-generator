@@ -7,7 +7,7 @@ The Video Shorts Generator (VSG) is a comprehensive solution for creating video 
 To enable themes generation, you will need fastText
 
 ```bash
-wget -O models/fastText/cc.en.300.bin.gz ttps://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.en.300.bin.gz
+wget -O models/fastText/cc.en.300.bin.gz https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.en.300.bin.gz
 cd models/fastText/ && gunzip cc.en.300.bin.gz
 ```
 
