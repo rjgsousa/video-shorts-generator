@@ -156,7 +156,6 @@ ifetch-sdk/reports/*
 ifetch-sdk/ifetch/deploy/NLU/lib/jointBERT/*.txt
 
 # Folders and files to ignore
-data/external/*
 data/interim/*
 data/raw/*
 
