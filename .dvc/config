@@ -2,6 +2,8 @@
     type = reflink, copy
 [core]
     remote = remote-storage-http
+    analytics = false
+    autostage = true
 ['remote "remote-storage"']
     url = s3://rs-public-projects/vsg/
 ['remote "remote-storage-http"']
