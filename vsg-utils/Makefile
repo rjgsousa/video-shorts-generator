@@ -10,4 +10,4 @@ clean:
 	@pip uninstall -y $(PROJECT_NAME)
 
 install:
-	poetry install --only main -v
+	POETRY_VIRTUALENVS_CREATE=false	poetry install --no-cache --only main -v
