@@ -17,17 +17,16 @@ clean: clean_documentation
 		cd $$project && $(MAKE) clean && cd $(CWD) ; \
 	done
 
-install:
-	pip install poetry==1.8.2
+install: install-project-components
+	@echo "Downloading required files... "
+	dvc pull
+
+install-project-components:
 	for project in $(PROJECTS); do \
 		cd $$project && $(MAKE) install && cd $(CWD) ; \
 	done
 
-dvc-update:
-	@echo "Downloading required files... "
-	dvc pull
-
-run-experiment-standalone: install dvc-update
+run-experiment-standalone: install
 	@echo "######################### Generating themes"
 	python vsg-models/vsg-themes/vsg_themes/theme_extractor.py
 	@echo "######################### Generating clips"

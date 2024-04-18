@@ -1,6 +1,10 @@
 [cache]
     type = reflink, copy
 [core]
-    remote = storage
-['remote "storage"']
-    url = gdrive://1bqArns1hWg2Drs2IsbuMXRPusK1Ohh3Z
+    remote = remote-storage-http
+    analytics = false
+    autostage = true
+['remote "remote-storage"']
+    url = s3://rs-public-projects/vsg/
+['remote "remote-storage-http"']
+    url = https://rs-public-projects.s3.eu-north-1.amazonaws.com/vsg/
