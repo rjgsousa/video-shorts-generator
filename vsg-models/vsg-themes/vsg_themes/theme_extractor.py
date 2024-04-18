@@ -30,7 +30,8 @@ def main(arguments):
         kw = ThemeKeywords()
         kw.conduct_analysis_and_create_report(content, outfile_themes_path)
     elif method == "lc":
-        lc = ThemeLexicalChains()
+        fasttext_model_file_path = arguments.model_fasttext_file_path
+        lc = ThemeLexicalChains(model_file_path=fasttext_model_file_path)
         lc.build_lexical_chains(content)
         lc.extract_lexical_chains(out_file_path=outfile_themes_path)
 
@@ -40,11 +41,13 @@ if __name__ == "__main__":
 
     parser.add_argument("--method",
                         choices=['transformer', 'tfidf', 'lc'], default="transformer", help="website to extract html")
+    parser.add_argument("--model-fasttext-file-path",
+                        default="models/fastText/cc.en.300.bin.gz", type=str, help="website to extract html")
     parser.add_argument("--website",
                         default="https://www.notta.ai/en", type=str, help="website to extract html")
-    parser.add_argument("--out_file_path",
+    parser.add_argument("--out-file-path",
                         default="data/external/notta.json", type=str, help="json file of the website")
-    parser.add_argument("--outfile_themes_file_path",
+    parser.add_argument("--outfile-themes-file-path",
                         default="data/external/notta_themes.json", type=str, help="json file of the website")
     args = parser.parse_args()
 
