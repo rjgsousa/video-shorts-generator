@@ -1,6 +1,6 @@
 [cache]
     type = reflink, copy
 [core]
-    remote = storage
-['remote "storage"']
-    url = gdrive://1bqArns1hWg2Drs2IsbuMXRPusK1Ohh3Z
+    remote = remote-storage
+['remote "remote-storage"']
+    url = s3://rs-public-projects/vsg/
