@@ -2,7 +2,7 @@ import json
 import logging
 import time
 
-import gensim.downloader
+import fasttext.util
 import networkx as nx
 import numpy as np
 from nltk.corpus import stopwords
@@ -24,11 +24,13 @@ class ThemeLexicalChains:
     Morris, J. and G. Hirst. Lexical cohesion computed by thesaural relations as an indicator of the
     structure of the text. In Computational Linguistics, 18(1):pp21-45. 1991.
     """
-    def __init__(self):
+    def __init__(self, model_file_path):
         self.n_sentences = -1
         self.lexical_chains = []
         self.graphs = {}
+        self.model_file_path = model_file_path
         self.model = None
+
         self._load_embeddings_model()
 
     @property
@@ -39,17 +41,18 @@ class ThemeLexicalChains:
         start_time = time.time()
         # todo: improve this as gensim is slow loading the model.
         logging.info("loading model...")
-        self.model = gensim.downloader.load('word2vec-google-news-300')
+        self.model = fasttext.load_model(self.model_file_path)
         logging.info(f"done in {time.time() - start_time} sec.")
 
     def build_graph(self, sentences):
+        words_indexed = self.model.get_words()
 
         for index, sent in enumerate(sentences):
             index_str = str(index)
 
             words = self.pre_process(sent, remove_punctuation=True)
 
-            X = [self.model[word] for word in words if word in self.model.key_to_index]
+            X = [self.model[word] for word in words if word in words_indexed]
             nbrs = NearestNeighbors(n_neighbors=2, algorithm='ball_tree').fit(X)
 
             distances, indices = nbrs.kneighbors(X)
@@ -149,7 +152,7 @@ if __name__ == "__main__":
     )
     # A lexical chain spanning these three sentences is {virgin, pine, bush, trees, trunks, trees}
 
-    lc = ThemeLexicalChains()
+    lc = ThemeLexicalChains(model_file_path="../../../../models/fastText/cc.en.300.bin")
     lc.build_lexical_chains(content)
     lc.extract_lexical_chains(n=3)
 

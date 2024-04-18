@@ -13,7 +13,7 @@ dependencies:
 	pip install poetry==1.8.2
 
 install: dependencies
-	POETRY_VIRTUALENVS_CREATE=false poetry install --only main -v
+	POETRY_VIRTUALENVS_CREATE=false	poetry install --no-cache --only main -v
 	python -m nltk.downloader wordnet
 	python -m nltk.downloader stopwords
 	python -m nltk.downloader punkt

@@ -14,7 +14,7 @@ readme = "README.md"
 python = "~3.10"
 clipsai = "~0.2.1"
 whisperx = {git = "https://github.com/m-bain/whisperX.git", rev = "f2da2f8" }
-torch = "~2.0.0"
+torch = "~2.2.0"
 dvc = "~3.49.0"
 platformdirs = "~3"
 dvc-s3 = "~3.1.0"
