@@ -1,14 +1,27 @@
 import os
 from os.path import abspath
 from os.path import dirname
+from typing import AnyStr
 
 import yaml
 
 from vsg_themes.analysis.theme_transformer import ThemeTransformer
 
+
 # -------------------------------------------
 # Generic Logic
-def get_root_dir():
+def get_root_dir() -> AnyStr:
+    """Get root directory of this package
+
+    Returns:
+        AnyStr: path in the host machine of the package
+
+    Examples:
+        Expected results when calling this function
+
+        >>> get_root_dir() #doctest: +ELLIPSIS
+        '/...'
+    """
     return dirname(dirname(abspath(__file__)))
 
 
@@ -36,3 +49,8 @@ class VSGThemesModels:
         else:
             raise NotImplemented(f"{self.method} is not yet implemented at the API level.")
 
+
+if __name__ == "__main__":
+    import doctest
+    failures, tests = doctest.testmod(verbose=True, optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS)
+    print(f"{__file__}: Tests: {tests}; Failures: {failures}")

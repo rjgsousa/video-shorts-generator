@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "vsg-themes"
-version = "0.4.0"
+version = "0.4.1"
 description = "Video Snippets Generator"
 authors = ["Ricardo G. Sousa <ricardo@rsousa.co>"]
 license = "MIT"
@@ -28,3 +28,12 @@ platformdirs = "~3"
 dvc-s3 = "~3.1.0"
 argparse = "~1.4.0"
 fasttext-wheel = "~0.9.2"
+
+[tool.poetry.group.dev.dependencies]
+tox = "~4.11"
+pytest = "~8.1"
+coverage = "~7.5"
+deepdiff = "~7.0.1"
+markdownify = "~0.12"
+lxml = "~5.2"
+
