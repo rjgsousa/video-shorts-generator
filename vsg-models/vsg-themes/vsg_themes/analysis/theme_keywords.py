@@ -1,7 +1,8 @@
+import json
+import logging
 from typing import Union
 
 from sklearn.feature_extraction.text import TfidfVectorizer
-
 from vsg_utils.files import save_to_json_file
 
 
@@ -44,17 +45,18 @@ class ThemeKeywords:
 
     def conduct_analysis_and_create_report(self, data: str, out_file_path: Union[str | None] = None):
         tfidf = self._conduct_analysis(data)
-        print(10*"=")
 
-        print("Presenting a report of the top key words available: ")
+        logging.info("Presenting a report of the top key words available: ")
         # final dictionary where we will record all themes
         result = {}
         for idx, item in enumerate(tfidf.items()):
             result[idx] = {'theme': item[0], 'score': item[1]}
-        print(result)
+        logging.info(json.dumps(result, indent=4))
 
         if out_file_path:
             save_to_json_file(result, out_file_path)
+
+        return result
 
 
 if __name__ == "__main__":
