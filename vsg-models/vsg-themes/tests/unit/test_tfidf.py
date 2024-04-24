@@ -24,11 +24,8 @@ class TestTfIdf(unittest.TestCase):
 
         tfidf_result = self.tf.conduct_analysis_and_create_report(data, out_file_path=None)
 
-        print(json.dumps(tfidf_result, indent=4))
-        print(json.dumps(tfidf_expected_result, indent=4))
-
         # assert same dict
         difference = DeepDiff(tfidf_expected_result, tfidf_result)
-        print(difference)
+
         assert difference == {}
 
